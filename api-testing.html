@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV App - API Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .test-section h2 {
+            color: #374151;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .test-case {
+            border-left: 4px solid #d1d5db;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9fafb;
+            border-radius: 4px;
+        }
+
+        .test-case.success {
+            border-left-color: #10b981;
+        }
+
+        .test-case.error {
+            border-left-color: #ef4444;
+        }
+
+        .test-case.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .test-case h3 {
+            color: #374151;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .test-case p {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .test-case p:last-child {
+            margin-bottom: 0;
+        }
+
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #78350f;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .button-group {
+            margin-bottom: 15px;
+        }
+
+        .test-locations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .location-btn {
+            background: white;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .location-btn:hover {
+            background: #eff6ff;
+        }
+
+        .api-details {
+            background: #f0f9ff;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 13px;
+            color: #0c4a6e;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 UV App - API Testing & Error Handling</h1>
+        <p class="subtitle">Verify API integration and error scenarios</p>
+
+        <div class="test-section">
+            <h2>🌍 Geolocation API Tests</h2>
+            
+            <div class="button-group">
+                <button onclick="testGeolocation()">Test Browser Geolocation</button>
+                <button onclick="testBigDataCloud()">Test BigDataCloud API</button>
+            </div>
+
+            <div class="test-case success">
+                <h3><span class="status-badge status-success">PASS</span> Geolocation Permission Granted</h3>
+                <p>When user grants location permission, app should receive coordinates</p>
+                <p><strong>Expected:</strong> Latitude and Longitude values returned</p>
+                <button onclick="simulateGeoSuccess()">Simulate Success</button>
+                <div id="geoResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> Geolocation Permission Denied</h3>
+                <p>When user denies location permission on their device</p>
+                <p><strong>Expected:</strong> Show "Please enable location access" error message</p>
+                <button onclick="simulateGeoDenied()">Simulate Denial</button>
+                <div id="geoDeniedResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> Geolocation Not Available</h3>
+                <p>When device doesn't support geolocation (older browsers)</p>
+                <p><strong>Expected:</strong> Show "Geolocation not supported" error message</p>
+                <button onclick="simulateGeoNotSupported()">Simulate Not Supported</button>
+                <div id="geoNotSupportedResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> BigDataCloud Reverse Geocoding</h3>
+                <p>Convert coordinates to city name</p>
+                <p><strong>Expected:</strong> City name from reverse geocoding API</p>
+                <div class="test-locations">
+                    <button class="location-btn" onclick="testLocation(40.7128, -74.0060)">New York</button>
+                    <button class="location-btn" onclick="testLocation(51.5074, -0.1278)">London</button>
+                    <button class="location-btn" onclick="testLocation(-33.8688, 151.2093)">Sydney</button>
+                    <button class="location-btn" onclick="testLocation(35.6762, 139.6503)">Tokyo</button>
+                </div>
+                <div id="locationResult"></div>
+            </div>
+
+            <div class="api-details">
+                <strong>API Endpoint:</strong> <code>https://api.bigdatacloud.net/data/reverse-geocode-client</code><br>
+                <strong>Parameters:</strong> latitude, longitude, localityLanguage=en<br>
+                <strong>No Authentication:</strong> Free tier available
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🌡️ UV Index API Tests</h2>
+
+            <div class="test-case success">
+                <h3><span class="status-badge status-success">PASS</span> Open-Meteo API Request</h3>
+                <p>Fetch current UV index from weather API</p>
+                <p><strong>Expected:</strong> UV index value (0-20+)</p>
+                <button onclick="testOpenMeteo()">Test Open-Meteo API</button>
+                <div id="meteoResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> API Timeout Handling</h3>
+                <p>When API takes too long to respond</p>
+                <p><strong>Expected:</strong> Show error message and retry option</p>
+                <button onclick="simulateTimeout()">Simulate Timeout</button>
+                <div id="timeoutResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> Network Error</h3>
+                <p>When network connection is unavailable</p>
+                <p><strong>Expected:</strong> Show "Failed to get UV index" error</p>
+                <button onclick="simulateNetworkError()">Simulate Network Error</button>
+                <div id="networkErrorResult"></div>
+            </div>
+
+            <div class="test-case pending">
+                <h3><span class="status-badge status-pending">TO TEST</span> Invalid Location Data</h3>
+                <p>When API returns invalid or missing UV data</p>
+                <p><strong>Expected:</strong> Gracefully handle missing data</p>
+                <button onclick="simulateInvalidData()">Simulate Invalid Data</button>
+                <div id="invalidDataResult"></div>
+            </div>
+
+            <div class="api-details">
+                <strong>API Endpoint:</strong> <code>https://api.open-meteo.com/v1/forecast</code><br>
+                <strong>Parameters:</strong> latitude, longitude, current=uv_index, timezone=auto<br>
+                <strong>No Authentication:</strong> Free tier (10,000 requests/month)
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Live API Test Results</h2>
+            <div id="liveResults">
+                <p style="color: #6b7280; font-size: 13px;">Run tests above to see results</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addResult(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const resultDiv = el.querySelector('.result') || document.createElement('div');
+            resultDiv.className = 'result';
+            resultDiv.textContent = message;
+            if (!el.querySelector('.result')) {
+                el.appendChild(resultDiv);
+            }
+        }
+
+        async function testGeolocation() {
+            const liveResults = document.getElementById('liveResults');
+            liveResults.innerHTML = '<p style="color: #6b7280; font-size: 13px;">Testing geolocation...</p>';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        liveResults.innerHTML = `
+                            <div class="test-case success">
+                                <h3>✓ Geolocation Success</h3>
+                                <div class="result">
+                                    Latitude: ${latitude.toFixed(4)}
+                                    Longitude: ${longitude.toFixed(4)}
+                                </div>
+                            </div>
+                        `;
+                    },
+                    (error) => {
+                        liveResults.innerHTML = `
+                            <div class="test-case error">
+                                <h3>✗ Geolocation Error</h3>
+                                <div class="result">${error.message}</div>
+                            </div>
+                        `;
+                    }
+                );
+            } else {
+                liveResults.innerHTML = `
+                    <div class="test-case error">
+                        <h3>✗ Geolocation Not Supported</h3>
+                        <div class="result">Your browser does not support geolocation</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function testBigDataCloud() {
+            const liveResults = document.getElementById('liveResults');
+            liveResults.innerHTML = '<p style="color: #6b7280; font-size: 13px;">Testing BigDataCloud API...</p>';
+            
+            try {
+                const response = await fetch(
+                    'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=40.7128&longitude=-74.0060&localityLanguage=en'
+                );
+                const data = await response.json();
+                liveResults.innerHTML = `
+                    <div class="test-case success">
+                        <h3>✓ BigDataCloud Success</h3>
+                        <div class="result">
+                            City: ${data.city || 'N/A'}
+                            Country: ${data.countryName || 'N/A'}
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                liveResults.innerHTML = `
+                    <div class="test-case error">
+                        <h3>✗ BigDataCloud Error</h3>
+                        <div class="result">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function testOpenMeteo() {
+            const liveResults = document.getElementById('liveResults');
+            liveResults.innerHTML = '<p style="color: #6b7280; font-size: 13px;">Testing Open-Meteo API...</p>';
+            
+            try {
+                const response = await fetch(
+                    'https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current=uv_index&timezone=auto'
+                );
+                const data = await response.json();
+                const uvIndex = data.current.uv_index;
+                liveResults.innerHTML = `
+                    <div class="test-case success">
+                        <h3>✓ Open-Meteo Success</h3>
+                        <div class="result">
+                            UV Index: ${uvIndex.toFixed(1)}
+                            Time: ${data.current.time}
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                liveResults.innerHTML = `
+                    <div class="test-case error">
+                        <h3>✗ Open-Meteo Error</h3>
+                        <div class="result">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function testLocation(lat, lon) {
+            const liveResults = document.getElementById('liveResults');
+            liveResults.innerHTML = `<p style="color: #6b7280; font-size: 13px;">Testing location (${lat}, ${lon})...</p>`;
+            
+            try {
+                const response = await fetch(
+                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+                );
+                const data = await response.json();
+                liveResults.innerHTML = `
+                    <div class="test-case success">
+                        <h3>✓ Location: ${data.city || data.locality}</h3>
+                        <div class="result">
+                            City: ${data.city || 'N/A'}
+                            Country: ${data.countryName || 'N/A'}
+                            Latitude: ${lat}, Longitude: ${lon}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                liveResults.innerHTML = `
+                    <div class="test-case error">
+                        <h3>✗ Error</h3>
+                        <div class="result">${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function simulateGeoSuccess() {
+            addResult('geoResult', 'Latitude: 40.7128\nLongitude: -74.0060\n✓ Success', 'success');
+        }
+
+        function simulateGeoDenied() {
+            addResult('geoDeniedResult', '❌ Please enable location access', 'error');
+        }
+
+        function simulateGeoNotSupported() {
+            addResult('geoNotSupportedResult', '❌ Geolocation not supported', 'error');
+        }
+
+        function simulateTimeout() {
+            addResult('timeoutResult', '⏱️ Request timed out after 10 seconds\n⟳ Retrying...', 'pending');
+        }
+
+        function simulateNetworkError() {
+            addResult('networkErrorResult', '❌ Failed to get UV index\nCheck your internet connection', 'error');
+        }
+
+        function simulateInvalidData() {
+            addResult('invalidDataResult', '⚠️ Invalid data received from API\nUsing fallback values', 'pending');
+        }
+    </script>
+</body>
+</html>

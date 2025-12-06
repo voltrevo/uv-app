@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Index - Test All Levels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .test-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .control-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preset-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .preview-screen {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            transition: background-color 0.5s ease;
+            padding: 20px;
+        }
+
+        /* UV Level Colors */
+        .bg-low { background: #10b981; }
+        .bg-moderate { background: #f59e0b; }
+        .bg-high { background: #ef4444; }
+        .bg-very-high { background: #7c3aed; }
+        .bg-extreme { background: #991b1b; }
+
+        .location {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .uv-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .uv-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .uv-rating {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .uv-value {
+            font-size: 80px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1;
+        }
+
+        .protection {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .preview-label {
+            background: white;
+            padding: 12px;
+            font-size: 13px;
+            color: #374151;
+            font-weight: 500;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .results-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        td {
+            color: #6b7280;
+        }
+
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 UV Index App - Test All Levels</h1>
+
+        <div class="test-controls">
+            <div class="control-group">
+                <label for="uvInput">Enter UV Index Value:</label>
+                <input type="number" id="uvInput" min="0" max="20" step="0.1" value="3.5" placeholder="Enter UV index">
+            </div>
+
+            <div class="control-group">
+                <label>Preset Values (Common scenarios):</label>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="testUVLevel(1.5)">Low (1.5)</button>
+                    <button class="preset-btn" onclick="testUVLevel(3.0)">Moderate (3.0)</button>
+                    <button class="preset-btn" onclick="testUVLevel(5.5)">Moderate (5.5)</button>
+                    <button class="preset-btn" onclick="testUVLevel(7.0)">High (7.0)</button>
+                    <button class="preset-btn" onclick="testUVLevel(9.0)">Very High (9.0)</button>
+                    <button class="preset-btn" onclick="testUVLevel(12.0)">Extreme (12.0)</button>
+                </div>
+            </div>
+
+            <button onclick="testCustomValue()" style="margin-top: 15px; width: 100%;">Test Custom Value</button>
+        </div>
+
+        <div class="preview-grid">
+            <div id="preview-container"></div>
+        </div>
+
+        <div class="results-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>UV Index Range</th>
+                        <th>Rating</th>
+                        <th>Message</th>
+                        <th>Background Color</th>
+                        <th>Hex Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0 - 2.9</td>
+                        <td>Low</td>
+                        <td>No protection</td>
+                        <td><span class="color-box bg-low"></span></td>
+                        <td>#10b981</td>
+                    </tr>
+                    <tr>
+                        <td>3 - 5.9</td>
+                        <td>Moderate</td>
+                        <td>Use sun protection</td>
+                        <td><span class="color-box bg-moderate"></span></td>
+                        <td>#f59e0b</td>
+                    </tr>
+                    <tr>
+                        <td>6 - 7.9</td>
+                        <td>High</td>
+                        <td>Use sun protection</td>
+                        <td><span class="color-box bg-high"></span></td>
+                        <td>#ef4444</td>
+                    </tr>
+                    <tr>
+                        <td>8 - 10.9</td>
+                        <td>Very High</td>
+                        <td>Use sun protection</td>
+                        <td><span class="color-box bg-very-high"></span></td>
+                        <td>#7c3aed</td>
+                    </tr>
+                    <tr>
+                        <td>11+</td>
+                        <td>Extreme</td>
+                        <td>Use sun protection</td>
+                        <td><span class="color-box bg-extreme"></span></td>
+                        <td>#991b1b</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function getProtection(uvIndex) {
+            const needsProtection = uvIndex >= 3;
+            let rating = '';
+            
+            if (uvIndex < 3) rating = 'Low';
+            else if (uvIndex < 6) rating = 'Moderate';
+            else if (uvIndex < 8) rating = 'High';
+            else if (uvIndex < 11) rating = 'Very High';
+            else rating = 'Extreme';
+            
+            return {
+                needsProtection,
+                rating,
+                text: needsProtection ? 'Use sun protection' : 'No protection'
+            };
+        }
+
+        function getBgClass(uvIndex) {
+            if (uvIndex < 3) return 'bg-low';
+            else if (uvIndex < 6) return 'bg-moderate';
+            else if (uvIndex < 8) return 'bg-high';
+            else if (uvIndex < 11) return 'bg-very-high';
+            else return 'bg-extreme';
+        }
+
+        function createPreview(uvIndex) {
+            const protection = getProtection(uvIndex);
+            const bgClass = getBgClass(uvIndex);
+
+            return `
+                <div class="preview-item">
+                    <div class="preview-screen ${bgClass}">
+                        <div class="location">Test Location</div>
+                        
+                        <div class="uv-display">
+                            <div class="uv-label">UV Index</div>
+                            <div class="uv-value">${uvIndex.toFixed(1)}</div>
+                            <div class="uv-rating">${protection.rating}</div>
+                        </div>
+                        
+                        <div class="protection">${protection.text}</div>
+                    </div>
+                    <div class="preview-label">UV ${uvIndex.toFixed(1)} - ${protection.rating}</div>
+                </div>
+            `;
+        }
+
+        function testUVLevel(uvIndex) {
+            document.getElementById('uvInput').value = uvIndex;
+            testCustomValue();
+        }
+
+        function testCustomValue() {
+            const uvValue = parseFloat(document.getElementById('uvInput').value);
+            
+            if (isNaN(uvValue)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            const container = document.getElementById('preview-container');
+            container.innerHTML = createPreview(uvValue);
+        }
+
+        // Test initial value on load
+        window.addEventListener('load', testCustomValue);
+    </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Icon Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .icon-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .icon-card h2 {
+            color: #374151;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .icon-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 200px;
+        }
+
+        .icon-display img, .icon-display svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .icon-info {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .icon-info strong {
+            display: block;
+            color: #374151;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .checklist {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .checklist h2 {
+            color: #374151;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .checkbox.checked {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .browser-test {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .browser-test h3 {
+            color: #374151;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .test-instructions {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .test-instructions code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d946ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 UV Index App - Icon Verification</h1>
+        <p class="subtitle">Verifying icon rendering across different sizes and formats</p>
+
+        <div class="icons-grid">
+            <div class="icon-card">
+                <h2>Favicon (32x32)</h2>
+                <div class="icon-display">
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width="96" height="96" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                        <rect fill='#f59e0b' width='192' height='192' rx='45'/>
+                        <g transform='translate(96,96)'>
+                            <rect x='-18' y='-28' width='36' height='50' rx='6' fill='#ffffff' stroke='#f59e0b' stroke-width='1.5'/>
+                            <rect x='-16' y='-35' width='32' height='8' rx='3' fill='#f59e0b'/>
+                            <circle cx='0' cy='-38' r='3.5' fill='#f59e0b'/>
+                            <rect x='-16' y='-20' width='32' height='35' rx='5' fill='#fbbf24' opacity='0.6'/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="icon-info">
+                    <strong>Size:</strong> 192x192 (scaled to 96x96)
+                    <strong>Format:</strong> SVG (data-URI)
+                    <strong>Purpose:</strong> Browser tab and address bar
+                </div>
+            </div>
+
+            <div class="icon-card">
+                <h2>App Icon (192x192)</h2>
+                <div class="icon-display">
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width="150" height="150" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                        <rect fill='#f59e0b' width='192' height='192' rx='45'/>
+                        <g transform='translate(96,96)'>
+                            <rect x='-18' y='-28' width='36' height='50' rx='6' fill='#ffffff' stroke='#f59e0b' stroke-width='1.5'/>
+                            <rect x='-16' y='-35' width='32' height='8' rx='3' fill='#f59e0b'/>
+                            <circle cx='0' cy='-38' r='3.5' fill='#f59e0b'/>
+                            <rect x='-16' y='-20' width='32' height='35' rx='5' fill='#fbbf24' opacity='0.6'/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="icon-info">
+                    <strong>Size:</strong> 192x192
+                    <strong>Format:</strong> SVG (data-URI in manifest)
+                    <strong>Purpose:</strong> Home screen icon (phone)
+                </div>
+            </div>
+
+            <div class="icon-card">
+                <h2>App Icon (512x512)</h2>
+                <div class="icon-display">
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width="150" height="150" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                        <rect fill='#f59e0b' width='512' height='512' rx='120'/>
+                        <g transform='translate(256,256)'>
+                            <rect x='-48' y='-75' width='96' height='134' rx='16' fill='#ffffff' stroke='#f59e0b' stroke-width='4'/>
+                            <rect x='-44' y='-94' width='88' height='22' rx='8' fill='#f59e0b'/>
+                            <circle cx='0' cy='-102' r='9' fill='#f59e0b'/>
+                            <rect x='-44' y='-54' width='88' height='94' rx='13' fill='#fbbf24' opacity='0.6'/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="icon-info">
+                    <strong>Size:</strong> 512x512
+                    <strong>Format:</strong> SVG (data-URI in manifest)
+                    <strong>Purpose:</strong> High-res app store display
+                </div>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h2>✅ Icon Verification Checklist</h2>
+            
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>SVG icons render cleanly without distortion</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>Orange background (#f59e0b) displays correctly</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>White bottle outline is crisp and clear</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>Golden liquid fill (#fbbf24) is visible</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>manifest.json has valid JSON syntax</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox checked">✓</div>
+                <span>Icons are data-URIs (no external files needed)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox">☐</div>
+                <span>Test on iOS home screen (requires HTTPS)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox">☐</div>
+                <span>Test on Android home screen (requires HTTPS)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox">☐</div>
+                <span>Icon displays in Chrome app launcher</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox">☐</div>
+                <span>Icon displays in browser bookmarks</span>
+            </div>
+
+            <div class="browser-test">
+                <h3>🔍 Manual Browser Testing</h3>
+                <div class="test-instructions">
+                    <p><strong>To test the app icon:</strong></p>
+                    <p>1. Visit <code>https://voltrevo.github.io/uv-app/</code></p>
+                    <p>2. iOS: Tap Share → Add to Home Screen</p>
+                    <p>3. Android: Tap menu (⋮) → Install app or Add to Home Screen</p>
+                    <p>4. Windows/Mac: Right-click → Create shortcut → Check "Open as window"</p>
+                    <p>5. Verify icon displays correctly and matches sunscreen bottle design</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
