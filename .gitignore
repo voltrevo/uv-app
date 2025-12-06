@@ -6,3 +6,5 @@ node_modules/
 .vscode/
 *.js
 !uv-simple.html
+screenshot-icon.js
+icon-preview.html
