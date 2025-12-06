@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #10b981;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+
+        body.bg-moderate {
+            background: #f59e0b;
+        }
+
+        body.bg-high {
+            background: #ef4444;
+        }
+
+        body.bg-very-high {
+            background: #7c3aed;
+        }
+
+        body.bg-extreme {
+            background: #991b1b;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 500px;
+            width: 100%;
+            gap: 40px;
+        }
+
+        .location {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .uv-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .uv-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .uv-rating {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .uv-value {
+            font-size: 120px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            line-height: 1;
+        }
+
+        .protection {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .loading {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="location" id="locationName">Loading...</div>
+        
+        <div class="uv-display">
+            <div class="uv-label">UV Index</div>
+            <div class="uv-value" id="uvValue">—</div>
+            <div class="uv-rating" id="uvRating"></div>
+        </div>
+        
+        <div class="protection" id="protection">
+            <div class="loading">Getting UV...</div>
+        </div>
+    </div>
+
+    <script>
+        async function getUserLocation() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                            const { latitude, longitude } = position.coords;
+                            try {
+                                // Use BigDataCloud reverse geocoding (CORS-friendly)
+                                const response = await fetch(
+                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+                                );
+                                const data = await response.json();
+                                const city = data.city || data.locality || 'Your Location';
+                                resolve({ city, latitude, longitude });
+                            } catch {
+                                resolve({ city: 'Your Location', latitude, longitude });
+                            }
+                        },
+                        (error) => {
+                            reject(new Error('Please enable location access'));
+                        }
+                    );
+                } else {
+                    reject(new Error('Geolocation not supported'));
+                }
+            });
+        }
+
+        async function getCurrentUVIndex(latitude, longitude) {
+            try {
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=uv_index&timezone=auto`
+                );
+                const data = await response.json();
+                return data.current.uv_index;
+            } catch (error) {
+                throw new Error('Failed to get UV index');
+            }
+        }
+
+        function getProtection(uvIndex) {
+            const needsProtection = uvIndex >= 3;
+            let rating = '';
+            
+            if (uvIndex < 3) rating = 'Low';
+            else if (uvIndex < 6) rating = 'Moderate';
+            else if (uvIndex < 8) rating = 'High';
+            else if (uvIndex < 11) rating = 'Very High';
+            else rating = 'Extreme';
+            
+            return {
+                needsProtection,
+                rating,
+                text: needsProtection ? 'Use sunscreen' : 'No protection'
+            };
+        }
+
+        async function load() {
+            try {
+                const location = await getUserLocation();
+                const uvIndex = await getCurrentUVIndex(location.latitude, location.longitude);
+                const protection = getProtection(uvIndex);
+
+                document.getElementById('locationName').textContent = location.city;
+                
+                const uvEl = document.getElementById('uvValue');
+                uvEl.textContent = uvIndex.toFixed(1);
+                uvEl.className = 'uv-value';
+                
+                const ratingEl = document.getElementById('uvRating');
+                ratingEl.textContent = protection.rating;
+
+                const protectionEl = document.getElementById('protection');
+                protectionEl.textContent = protection.text;
+                protectionEl.className = 'protection';
+                
+                // Set body background color based on UV category
+                document.body.className = '';
+                if (uvIndex < 3) document.body.classList.add('bg-low');
+                else if (uvIndex < 6) document.body.classList.add('bg-moderate');
+                else if (uvIndex < 8) document.body.classList.add('bg-high');
+                else if (uvIndex < 11) document.body.classList.add('bg-very-high');
+                else document.body.classList.add('bg-extreme');
+            } catch (error) {
+                document.getElementById('protection').textContent = '❌ Error';
+            }
+        }
+
+        window.addEventListener('load', load);
+    </script>
+</body>
+</html>
